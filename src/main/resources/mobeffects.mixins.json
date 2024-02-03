@@ -1,0 +1,18 @@
+{
+	"required": true,
+	"package": "net.muffin.mobeffects.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"FauxStatusEffectMixin",
+		"FoodifyMixin",
+		"GuardianBeamMixin",
+		"GuardianBeamRendererMixin"
+	],
+	"client": [
+		"HandUseMixin"
+	],
+
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
