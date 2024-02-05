@@ -12,6 +12,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
@@ -38,6 +39,10 @@ import net.minecraft.entity.data.DataTracker;
 public abstract class HandUseMixin {
     @Unique
     private static final Logger LOGGER = LoggerFactory.getLogger(MobEffectsMod.MOD_ID);
+
+    @Shadow
+    public abstract float getTickDelta();
+    
     @Unique
     @Nullable
     private LivingEntity getLivingEntityInCrosshair(float reach) {
@@ -50,7 +55,7 @@ public abstract class HandUseMixin {
             return null;
         }
         double d = reach;
-        float tickDelta = 1.0f; // might cause an error. . . idk
+        float tickDelta = this.getTickDelta();
         HitResult target = entity2.raycast(d, tickDelta, false);
         Vec3d vec3d = entity2.getCameraPosVec(tickDelta);
         double e = target != null ? target.getPos().squaredDistanceTo(vec3d) : d * d;
@@ -65,14 +70,13 @@ public abstract class HandUseMixin {
         }
         return null;
     }
+
     @Shadow
     public ClientPlayerEntity player;
-    @Shadow
-    @Nullable
-    public HitResult crosshairTarget;
 
     @Shadow
     public ClientPlayerInteractionManager interactionManager;
+
     @Shadow
     @Nullable
     public Entity cameraEntity;
@@ -85,10 +89,10 @@ public abstract class HandUseMixin {
                 ClientPlayNetworking.send(ModMessages.LAY_EGG_ID, PacketByteBufs.create());
             }
             else if (player.hasStatusEffect(MobEffectsMod.GUARDIANSTATUS)) {
-                if (player instanceof GuardianPlayer) {
+                if (player instanceof GuardianPlayer guardianPlayerEntity) {
                     LivingEntity targetedEntity = getLivingEntityInCrosshair(15.0f);
                     if (targetedEntity != null) {
-                        ((GuardianPlayer) player).setBeamTarget(targetedEntity.getId());
+                        guardianPlayerEntity.setBeamTarget(targetedEntity.getId());
                     }
                 }
             }
