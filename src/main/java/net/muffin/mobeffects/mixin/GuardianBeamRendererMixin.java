@@ -62,6 +62,7 @@ public class GuardianBeamRendererMixin {
     @Unique
     private void renderGuardianBeam(PlayerEntity playerEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, boolean firstPerson) {
         float playerYoffset = -2.0f;
+
         float targetYoffset = 0.5f;
         if (firstPerson) {
             playerYoffset = -0.5f;
