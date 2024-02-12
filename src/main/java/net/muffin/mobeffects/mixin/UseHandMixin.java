@@ -5,19 +5,20 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.MinecraftClient;
 
-import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.muffin.mobeffects.event.UseHandCallback;
 import net.muffin.mobeffects.networking.ModMessages;
+import net.muffin.mobeffects.statuseffect.MobStatusEffects;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -32,14 +33,22 @@ import org.slf4j.LoggerFactory;
 
 import net.muffin.mobeffects.MobEffectsMod;
 
-import net.minecraft.entity.data.DataTracker;
-
 
 @Mixin(MinecraftClient.class)
-public abstract class HandUseMixin {
+public abstract class UseHandMixin {
     @Unique
     private static final Logger LOGGER = LoggerFactory.getLogger(MobEffectsMod.MOD_ID);
-
+    @Shadow
+    @Nullable
+    public ClientWorld world;
+    @Shadow
+    public ClientPlayerEntity player;
+    @Shadow
+    @Nullable
+    public HitResult crosshairTarget;
+    @Shadow
+    @Nullable
+    public Entity cameraEntity;
     @Shadow
     public abstract float getTickDelta();
     
@@ -71,24 +80,16 @@ public abstract class HandUseMixin {
         return null;
     }
 
-    @Shadow
-    public ClientPlayerEntity player;
-
-    @Shadow
-    public ClientPlayerInteractionManager interactionManager;
-
-    @Shadow
-    @Nullable
-    public Entity cameraEntity;
-
     @Inject(method = "doItemUse", at = @At("HEAD"))
     private void injected(CallbackInfo ci) {
         ItemStack itemStack = player.getMainHandStack();
         if(itemStack.isEmpty()) {
-            if (player.hasStatusEffect(MobEffectsMod.CHICKENSTATUS)) {
+            ActionResult result = UseHandCallback.EVENT.invoker().interact(player, world, crosshairTarget);
+            /*
+            if (player.hasStatusEffect(MobStatusEffects.CHICKEN)) {
                 ClientPlayNetworking.send(ModMessages.LAY_EGG_ID, PacketByteBufs.create());
             }
-            else if (player.hasStatusEffect(MobEffectsMod.GUARDIANSTATUS)) {
+            else if (player.hasStatusEffect(MobStatusEffects.GUARDIAN)) {
                 if (player instanceof GuardianPlayer guardianPlayerEntity) {
                     LivingEntity targetedEntity = getLivingEntityInCrosshair(15.0f);
                     if (targetedEntity != null) {
@@ -96,6 +97,7 @@ public abstract class HandUseMixin {
                     }
                 }
             }
+             */
         }
     }
 }

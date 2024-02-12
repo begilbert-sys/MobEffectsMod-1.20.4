@@ -5,11 +5,11 @@
 	"mixins": [
 		"FauxStatusEffectMixin",
 		"FoodifyMixin",
-		"GuardianBeamMixin",
-		"GuardianBeamRendererMixin"
+		"GuardianBeamMixin"
 	],
 	"client": [
-		"HandUseMixin"
+		"UseHandMixin",
+		"GuardianBeamFirstPersonRendererMixin"
 	],
 
 	"injectors": {

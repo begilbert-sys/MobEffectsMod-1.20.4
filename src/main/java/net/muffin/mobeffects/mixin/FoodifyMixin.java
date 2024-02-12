@@ -40,17 +40,21 @@ public abstract class FoodifyMixin {
     @Shadow
     public abstract FoodComponent getFoodComponent();
 
-
+    /*
     @Inject(method = "getFoodComponent", at = @At("HEAD"), cancellable = true)
     private void fauxFoodComponent(CallbackInfoReturnable<FoodComponent> cir) {
-        if (MobEffectsMod.CurrentMobStatus == MobEffectsMod.CHICKENSTATUS && toString().equals("wheat_seeds")) {
+        if (MobEffectsMod.CurrentMobStatus == MobEffectsMod.CHICKENSTATUS &&
+                toString().equals("wheat_seeds")
+        ) {
             cir.setReturnValue(FoodComponentsMod.WHEAT_SEEDS);
             cir.cancel();
         }
     }
+     */
 
     @Inject(method = "isFood", at = @At("HEAD"), cancellable = true)
     public void isStackAwareFood(CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(this.getFoodComponent() != null);
+        cir.cancel();
     }
 }
