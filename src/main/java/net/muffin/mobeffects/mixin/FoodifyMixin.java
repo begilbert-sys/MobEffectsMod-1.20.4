@@ -8,11 +8,16 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.LivingEntity;
 
 import net.minecraft.entity.player.HungerManager;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.resource.featuretoggle.ToggleableFeature;
 import net.minecraft.text.Text;
-import net.muffin.mobeffects.FoodComponentsMod;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.world.World;
+import net.muffin.mobeffects.ExtraFoodComponents;
 import net.muffin.mobeffects.statuseffect.ChickenStatusEffect;
+import net.muffin.mobeffects.statuseffect.MobStatusEffect;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +32,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.muffin.mobeffects.MobEffectsMod;
 
+import net.muffin.mobeffects.MobStatusEntity;
+
 import java.util.Map;
 
 
@@ -38,23 +45,32 @@ public abstract class FoodifyMixin {
     @Shadow
     public abstract String toString();
     @Shadow
+    public abstract Item asItem();
+    @Shadow
     public abstract FoodComponent getFoodComponent();
-
-    /*
     @Inject(method = "getFoodComponent", at = @At("HEAD"), cancellable = true)
-    private void fauxFoodComponent(CallbackInfoReturnable<FoodComponent> cir) {
-        if (MobEffectsMod.CurrentMobStatus == MobEffectsMod.CHICKENSTATUS &&
-                toString().equals("wheat_seeds")
-        ) {
-            cir.setReturnValue(FoodComponentsMod.WHEAT_SEEDS);
+    public void getFoodifiedComponent(CallbackInfoReturnable<FoodComponent> cir) {
+        Item thisItem = asItem();
+        if (ExtraFoodComponents.itemFoodComponentMap.containsKey(thisItem)) {
+            cir.setReturnValue(ExtraFoodComponents.itemFoodComponentMap.get(thisItem));
             cir.cancel();
         }
     }
-     */
 
-    @Inject(method = "isFood", at = @At("HEAD"), cancellable = true)
-    public void isStackAwareFood(CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(this.getFoodComponent() != null);
-        cir.cancel();
+    @Inject(method = "use", at = @At("HEAD"), cancellable = true)
+    public void useItemInject(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
+        Item thisItem = asItem();
+        if (ExtraFoodComponents.isModdedFoodComponent(thisItem.getFoodComponent())) {
+            MobStatusEffect mobEffect = ((MobStatusEntity)user).getMobStatusEffect();
+            ItemStack itemStack = user.getStackInHand(hand);
+            if (mobEffect != null && mobEffect.foodifiesItem(thisItem)) {
+                user.setCurrentHand(hand);
+                cir.setReturnValue(TypedActionResult.consume(itemStack));
+                cir.cancel();
+            } else {
+                cir.setReturnValue(TypedActionResult.pass(itemStack));
+                cir.cancel();
+            }
+        }
     }
 }

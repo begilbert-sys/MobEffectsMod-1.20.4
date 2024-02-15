@@ -19,8 +19,5 @@ public class LayEggC2SPacket {
                                PacketByteBuf buf, PacketSender responseSender) {
         ItemStack itemStack = new ItemStack(Items.EGG);
         player.setStackInHand(player.getActiveHand(), itemStack);
-        if (player instanceof GuardianPlayer) {
-            LOGGER.info("bluh");
-        }
     }
 }

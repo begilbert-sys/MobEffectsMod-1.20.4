@@ -27,6 +27,16 @@ public class MobStatusEffects extends StatusEffects {
             new StatusEffect[]{StatusEffects.WATER_BREATHING},
             new Item[]{}
     ));
+    public static final StatusEffect EVOKER = create(new EvokerStatusEffect(
+            EntityType.EVOKER,
+            new StatusEffect[]{},
+            new Item[]{}
+    ));
+    public static final StatusEffect PANDA = create(new MobStatusEffect(
+            EntityType.PANDA,
+            new StatusEffect[]{},
+            new Item[]{Items.BAMBOO}
+    ));
 
     public static MobStatusEffect create(MobStatusEffect effect) {
         mobEffectMap.put(effect.getMobType(), effect);

@@ -9,6 +9,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -21,14 +22,15 @@ public class GuardianStatusEffect extends MobStatusEffect {
         super(mob, mimickedEffects, foodifiedItems);
     }
     @Override
-    public ActionResult UseHandEventListener(PlayerEntity player, World world, HitResult target) {
+    public ActionResult UseHandEventListener(PlayerEntity player, World world, EntityHitResult target) {
         /* Target a living entity with the guardian beam */
         GuardianPlayer guardianPlayerEntity = (GuardianPlayer)player;
-        if (target != null && target.getType() == HitResult.Type.ENTITY) {
-            Entity entity = ((EntityHitResult)target).getEntity();
-            if (entity instanceof LivingEntity) {
-                guardianPlayerEntity.setBeamTarget(entity.getId());
-            }
+        if (target != null && target.getEntity() instanceof LivingEntity entityTarget) {
+            int entityId = entityTarget.getId();
+            PacketByteBuf packet = PacketByteBufs.create();
+            packet.writeInt(entityId);
+            ClientPlayNetworking.send(ModMessages.GUARDIAN_BEAM_TARGET_ID, packet);
+            guardianPlayerEntity.setBeamTarget(entityTarget.getId());
         }
         return ActionResult.PASS;
     }

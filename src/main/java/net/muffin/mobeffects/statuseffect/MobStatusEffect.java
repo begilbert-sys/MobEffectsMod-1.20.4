@@ -7,17 +7,18 @@ import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public abstract class MobStatusEffect extends StatusEffect {
+public class MobStatusEffect extends StatusEffect {
     protected final StatusEffect[] mimickedEffects;
     protected final Item[] foodifiedItems;
     protected final EntityType<? extends LivingEntity> mobType;
 
-    public ActionResult UseHandEventListener(PlayerEntity player, World world, HitResult target) {
+    public ActionResult UseHandEventListener(PlayerEntity player, World world, EntityHitResult target) {
         return ActionResult.PASS;
     }
     public MobStatusEffect(EntityType<? extends LivingEntity> mob, StatusEffect[] mimickedEffects, Item[] foodifiedItems) {

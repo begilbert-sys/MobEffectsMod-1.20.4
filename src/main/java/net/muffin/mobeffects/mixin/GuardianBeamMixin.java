@@ -1,8 +1,5 @@
 package net.muffin.mobeffects.mixin;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.data.DataTracker;
@@ -12,12 +9,8 @@ import net.minecraft.entity.LivingEntity;
 
 import net.minecraft.entity.player.PlayerEntity;
 
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.muffin.mobeffects.networking.ModMessages;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +40,6 @@ public abstract class GuardianBeamMixin extends LivingEntity implements Guardian
     @Unique
     private int beamTicks;
     @Unique
-    @Nullable
-    private LivingEntity cachedBeamTarget;
-    @Nullable
-    private LivingEntity selectedTarget;
-    @Unique
-    private float standingEyeHeight;
-    @Unique
     private static final TrackedData<Integer> BEAM_TARGET_ID = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
 
     protected GuardianBeamMixin(EntityType<? extends LivingEntity> entityType, World world) {
@@ -62,25 +48,23 @@ public abstract class GuardianBeamMixin extends LivingEntity implements Guardian
 
     @Unique
     public int getWarmupTime() {
+        /* TAKEN FROM SOURCE: net.minecraft.entity.mob.GuardianEntity.getWarmupTime */
         return 80;
     }
     @Unique
     public void setBeamTarget(int entityId) {
-        if (this.getWorld().isClient) {
-            PacketByteBuf packet = PacketByteBufs.create();
-            packet.writeInt(entityId);
-            ClientPlayNetworking.send(ModMessages.GUARDIAN_BEAM_TARGET_ID, packet);
-        } else {
-            this.dataTracker.set(BEAM_TARGET_ID, entityId);
-        }
+        /* TAKEN FROM SOURCE: net.minecraft.entity.mob.GuardianEntity.setBeamTarget */
+        this.dataTracker.set(BEAM_TARGET_ID, entityId);
     }
     @Unique
     public boolean hasBeamTarget() {
+        /* TAKEN FROM SOURCE: net.minecraft.entity.mob.GuardianEntity.hasBeamTarget */
         return this.dataTracker.get(BEAM_TARGET_ID) != 0;
     }
     @Unique
     @Nullable
     public LivingEntity getBeamTarget() {
+        /* TAKEN FROM SOURCE: net.minecraft.entity.mob.GuardianEntity.getBeamTarget */
         if (!this.hasBeamTarget()) {
             return null;
         }
@@ -89,23 +73,17 @@ public abstract class GuardianBeamMixin extends LivingEntity implements Guardian
     }
     @Unique
     public float getBeamProgress(float tickDelta) {
+        /* TAKEN FROM SOURCE: net.minecraft.entity.mob.GuardianEntity.getBeamProgress */
         return ((float)this.beamTicks + tickDelta) / (float)this.getWarmupTime();
     }
     @Unique
     public float getBeamTicks() {
+        /* TAKEN FROM SOURCE: net.minecraft.entity.mob.GuardianEntity.getBeamTicks */
         return this.beamTicks;
-    }
-
-    @Override
-    public void onTrackedDataSet(TrackedData<?> data) {
-        super.onTrackedDataSet(data);
-        if (BEAM_TARGET_ID.equals(data)) {
-            this.beamTicks = 0;
-            this.cachedBeamTarget = null;
-        }
     }
     @Unique
     private void addBubbleEffect(LivingEntity targetEntity) {
+        /* TAKEN FROM SOURCE: net.minecraft.entity.mob.GuardianEntity.tickMovement */
         // my vars
         double targetYOffset = 0.5;
         double playerYOffset = 1.02;
@@ -130,6 +108,7 @@ public abstract class GuardianBeamMixin extends LivingEntity implements Guardian
 
     @Inject(method = "tickMovement", at = @At("TAIL"))
     private void beamTickMovement(CallbackInfo ci) {
+        /* TAKEN FROM SOURCE: net.minecraft.entity.mob.GuardianEntity.tickMovement */
         if (!this.hasBeamTarget()) {
             return;
         }
@@ -144,6 +123,7 @@ public abstract class GuardianBeamMixin extends LivingEntity implements Guardian
     }
     @Inject(method = "tick", at = @At("TAIL"))
     private void beamTick(CallbackInfo ci) {
+        /* TAKEN FROM SOURCE: net.minecraft.entity.mob.GuardianEntity.FireBeamGoal.tick */
         LivingEntity livingEntity = getBeamTarget();
         if (livingEntity == null) {
             return;

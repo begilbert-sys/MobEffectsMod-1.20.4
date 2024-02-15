@@ -1,12 +1,8 @@
 package net.muffin.mobeffects;
 
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
+
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.ElderGuardianEntity;
-import net.minecraft.entity.mob.GuardianEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.effect.StatusEffect;
@@ -40,14 +36,13 @@ import net.muffin.mobeffects.networking.ModMessages;
 
 
 public class MobEffectsMod implements ModInitializer {
-	public static StatusEffect CurrentMobStatus = null;
 	public static final String MOD_ID = "mobeffects";
 	private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	private static void addMobStatusEffect(ServerWorld world, Entity entity, LivingEntity killedEntity) {
 		if (entity instanceof PlayerEntity && MobStatusEffects.mobEffectMap.containsKey(killedEntity.getType())) {
-			StatusEffect mobEffect = MobStatusEffects.mobEffectMap.get(killedEntity.getType());
-			((PlayerEntity) entity).addStatusEffect(new StatusEffectInstance(mobEffect, 12000));
+			MobStatusEffect mobEffect = MobStatusEffects.mobEffectMap.get(killedEntity.getType());
+			((MobStatusEntity) entity).setMobStatusEffect(mobEffect);
 		}
 	}
 	public void registerMobStatusEffects() {

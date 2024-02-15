@@ -45,19 +45,15 @@ public abstract class UseHandMixin {
     public ClientPlayerEntity player;
     @Shadow
     @Nullable
-    public HitResult crosshairTarget;
-    @Shadow
-    @Nullable
     public Entity cameraEntity;
     @Shadow
     public abstract float getTickDelta();
     
     @Unique
     @Nullable
-    private LivingEntity getLivingEntityInCrosshair(float reach) {
-        /* Return a living entity in the player's crosshair, or null
-        This code is taken from the source code.
-        Source: net.minecraft.client.render.GameRenderer.updateTargetedEntity
+    private EntityHitResult getEntityInCrosshair(float reach) {
+        /* TAKEN FROM SOURCE: net.minecraft.client.render.GameRenderer.updateTargetedEntity
+        Return a living entity in the player's crosshair, or null
         */
         Entity entity2 = cameraEntity;
         if (entity2 == null) {
@@ -73,31 +69,15 @@ public abstract class UseHandMixin {
         float f = 1.0f;
         Box box = entity2.getBoundingBox().stretch(vec3d2.multiply(d)).expand(1.0, 1.0, 1.0);
         EntityHitResult entityHitResult = ProjectileUtil.raycast(entity2, vec3d, vec3d3, box, entity -> !entity.isSpectator() && entity.canHit(), e);
-        if (entityHitResult != null) {
-            Entity hitEntity = entityHitResult.getEntity();
-            return (hitEntity instanceof LivingEntity ? (LivingEntity)hitEntity : null);
-        }
-        return null;
+        return entityHitResult;
     }
 
     @Inject(method = "doItemUse", at = @At("HEAD"))
     private void injected(CallbackInfo ci) {
         ItemStack itemStack = player.getMainHandStack();
         if(itemStack.isEmpty()) {
-            ActionResult result = UseHandCallback.EVENT.invoker().interact(player, world, crosshairTarget);
-            /*
-            if (player.hasStatusEffect(MobStatusEffects.CHICKEN)) {
-                ClientPlayNetworking.send(ModMessages.LAY_EGG_ID, PacketByteBufs.create());
-            }
-            else if (player.hasStatusEffect(MobStatusEffects.GUARDIAN)) {
-                if (player instanceof GuardianPlayer guardianPlayerEntity) {
-                    LivingEntity targetedEntity = getLivingEntityInCrosshair(15.0f);
-                    if (targetedEntity != null) {
-                        guardianPlayerEntity.setBeamTarget(targetedEntity.getId());
-                    }
-                }
-            }
-             */
+            EntityHitResult target = getEntityInCrosshair(15.0f);
+            ActionResult result = UseHandCallback.EVENT.invoker().interact(player, world, target);
         }
     }
 }

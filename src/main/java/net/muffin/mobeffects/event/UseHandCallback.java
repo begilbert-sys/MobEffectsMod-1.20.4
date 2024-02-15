@@ -1,11 +1,14 @@
 package net.muffin.mobeffects.event;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
@@ -32,5 +35,5 @@ public interface UseHandCallback {
             }
     );
 
-    ActionResult interact(PlayerEntity player, World world, HitResult target);
+    ActionResult interact(PlayerEntity player, World world, EntityHitResult target);
 }

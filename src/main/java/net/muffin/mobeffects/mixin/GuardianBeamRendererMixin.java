@@ -2,7 +2,6 @@ package net.muffin.mobeffects.mixin;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -27,24 +26,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldRenderer.class)
-public class GuardianBeamFirstPersonRendererMixin {
+public class GuardianBeamRendererMixin {
     @Unique
     private static final Identifier EXPLOSION_BEAM_TEXTURE = new Identifier("textures/entity/guardian_beam.png");
     @Unique
     private static final RenderLayer LAYER = RenderLayer.getEntityCutoutNoCull(EXPLOSION_BEAM_TEXTURE);
-
-
-    @Unique
-    private Vec3d fromLerpedPosition(LivingEntity entity, double yOffset, float delta) {
-        double d = MathHelper.lerp((double)delta, entity.lastRenderX, entity.getX());
-        double e = MathHelper.lerp((double)delta, entity.lastRenderY, entity.getY()) + yOffset;
-        double f = MathHelper.lerp((double)delta, entity.lastRenderZ, entity.getZ());
-        return new Vec3d(d, e, f);
-    }
-    @Unique
-    private static void vertex(VertexConsumer vertexConsumer, Matrix4f positionMatrix, Matrix3f normalMatrix, float x, float y, float z, int red, int green, int blue, float u, float v) {
-        vertexConsumer.vertex(positionMatrix, x, y, z).color(red, green, blue, 255).texture(u, v).overlay(OverlayTexture.DEFAULT_UV).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).normal(normalMatrix, 0.0f, 1.0f, 0.0f).next();
-    }
     @Unique
     private static final Logger LOGGER = LoggerFactory.getLogger(MobEffectsMod.MOD_ID);
     @Shadow
@@ -56,7 +42,22 @@ public class GuardianBeamFirstPersonRendererMixin {
     private MinecraftClient client;
 
     @Unique
+    private Vec3d fromLerpedPosition(LivingEntity entity, double yOffset, float delta) {
+        /* TAKEN FROM SOURCE: net.minecraft.client.render.entity.GuardianEntityRenderer.fromLerpedPosition */
+        double d = MathHelper.lerp((double)delta, entity.lastRenderX, entity.getX());
+        double e = MathHelper.lerp((double)delta, entity.lastRenderY, entity.getY()) + yOffset;
+        double f = MathHelper.lerp((double)delta, entity.lastRenderZ, entity.getZ());
+        return new Vec3d(d, e, f);
+    }
+    @Unique
+    private static void vertex(VertexConsumer vertexConsumer, Matrix4f positionMatrix, Matrix3f normalMatrix, float x, float y, float z, int red, int green, int blue, float u, float v) {
+        /* TAKEN FROM SOURCE: net.minecraft.client.render.entity.GuardianEntityRenderer.vertex */
+        vertexConsumer.vertex(positionMatrix, x, y, z).color(red, green, blue, 255).texture(u, v).overlay(OverlayTexture.DEFAULT_UV).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).normal(normalMatrix, 0.0f, 1.0f, 0.0f).next();
+    }
+
+    @Unique
     private void renderGuardianBeam(PlayerEntity playerEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+        /* TAKEN FROM SOURCE: net.minecraft.client.render.entity.GuardianEntityRenderer.render */
         if (playerEntity instanceof GuardianPlayer guardianPlayerEntity) {
             if (playerEntity.hasStatusEffect(MobStatusEffects.GUARDIAN)) {
                 LivingEntity livingEntity = guardianPlayerEntity.getBeamTarget();
@@ -109,26 +110,45 @@ public class GuardianBeamFirstPersonRendererMixin {
                     MatrixStack.Entry entry = matrices.peek();
                     Matrix4f matrix4f = entry.getPositionMatrix();
                     Matrix3f matrix3f = entry.getNormalMatrix();
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, af, an, ag, s, t, u, 0.4999f, ar);
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, af, 0.0f, ag, s, t, u, 0.4999f, aq);
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, ah, 0.0f, ai, s, t, u, 0.0f, aq);
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, ah, an, ai, s, t, u, 0.0f, ar);
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, aj, an, ak, s, t, u, 0.4999f, ar);
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, aj, 0.0f, ak, s, t, u, 0.4999f, aq);
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, al, 0.0f, am, s, t, u, 0.0f, aq);
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, al, an, am, s, t, u, 0.0f, ar);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, af, an, ag, s, t, u, 0.4999f, ar);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, af, 0.0f, ag, s, t, u, 0.4999f, aq);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, ah, 0.0f, ai, s, t, u, 0.0f, aq);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, ah, an, ai, s, t, u, 0.0f, ar);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, aj, an, ak, s, t, u, 0.4999f, ar);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, aj, 0.0f, ak, s, t, u, 0.4999f, aq);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, al, 0.0f, am, s, t, u, 0.0f, aq);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, al, an, am, s, t, u, 0.0f, ar);
                     float as = 0.0f;
                     if (playerEntity.age % 2 == 0) {
                         as = 0.5f;
                     }
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, x, an, y, s, t, u, 0.5f, as + 0.5f);
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, z, an, aa, s, t, u, 1.0f, as + 0.5f);
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, ad, an, ae, s, t, u, 1.0f, as);
-                    GuardianBeamFirstPersonRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, ab, an, ac, s, t, u, 0.5f, as);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, x, an, y, s, t, u, 0.5f, as + 0.5f);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, z, an, aa, s, t, u, 1.0f, as + 0.5f);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, ad, an, ae, s, t, u, 1.0f, as);
+                    GuardianBeamRendererMixin.vertex(vertexConsumer, matrix4f, matrix3f, ab, an, ac, s, t, u, 0.5f, as);
                     matrices.pop();
                 }
             }
         }
+    }
+
+    @Unique
+    private void render(PlayerEntity entity, double cameraX, double cameraY, double cameraZ, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+        /* TAKEN FROM SOURCE: net.minecraft.client.render.WorldRenderer.renderEntity AND net.minecraft.client.render.entity.EntityRenderDispatcher.render */
+        double d = MathHelper.lerp(tickDelta, entity.lastRenderX, entity.getX());
+        double e = MathHelper.lerp(tickDelta, entity.lastRenderY, entity.getY());
+        double f = MathHelper.lerp(tickDelta, entity.lastRenderZ, entity.getZ());
+        double x = d - cameraX;
+        double y = e - cameraY;
+        double z = f - cameraZ;
+        Vec3d vec3d = Vec3d.ZERO;
+        double d2 = x + vec3d.getX();
+        double e2 = y + vec3d.getY();
+        double f2 = z + vec3d.getZ();
+        matrices.push();
+        matrices.translate(d2, e2, f2);
+        renderGuardianBeam(entity, tickDelta, matrices, vertexConsumers);
+        matrices.pop();
     }
 
     @Inject(method = "render", at = @At("TAIL"))
@@ -141,43 +161,13 @@ public class GuardianBeamFirstPersonRendererMixin {
         if (this.client != null && this.client.player != null) {
             PlayerEntity entity = this.client.player;
             VertexConsumerProvider vertexConsumers = this.bufferBuilders.getEntityVertexConsumers();
-            double d = MathHelper.lerp((double)tickDelta, entity.lastRenderX, entity.getX());
-            double e = MathHelper.lerp((double)tickDelta, entity.lastRenderY, entity.getY());
-            double f = MathHelper.lerp((double)tickDelta, entity.lastRenderZ, entity.getZ());
-            float g = MathHelper.lerp(tickDelta, entity.prevYaw, entity.getYaw());
-            double x = d - cameraX;
-            double y = e - cameraY;
-            double z = f - cameraZ;
-            float yaw = g;
-            Vec3d vec3d = Vec3d.ZERO;
-            double d2 = x + vec3d.getX();
-            double e2 = y + vec3d.getY();
-            double f2 = z + vec3d.getZ();
-            matrices.push();
-            matrices.translate(d2, e2, f2);
-            renderGuardianBeam((PlayerEntity)entity, tickDelta, matrices, vertexConsumers);
-            matrices.pop();
+            render(entity, cameraX, cameraY, cameraZ, tickDelta, matrices, vertexConsumers);
         }
     }
     @Inject(method = "renderEntity", at = @At("TAIL"))
     private void renderThirdPersonBeam(Entity entity, double cameraX, double cameraY, double cameraZ, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo ci) {
         if (entity instanceof PlayerEntity) {
-            double d = MathHelper.lerp((double)tickDelta, entity.lastRenderX, entity.getX());
-            double e = MathHelper.lerp((double)tickDelta, entity.lastRenderY, entity.getY());
-            double f = MathHelper.lerp((double)tickDelta, entity.lastRenderZ, entity.getZ());
-            float g = MathHelper.lerp(tickDelta, entity.prevYaw, entity.getYaw());
-            double x = d - cameraX;
-            double y = e - cameraY;
-            double z = f - cameraZ;
-            float yaw = g;
-            Vec3d vec3d = Vec3d.ZERO;
-            double d2 = x + vec3d.getX();
-            double e2 = y + vec3d.getY();
-            double f2 = z + vec3d.getZ();
-            matrices.push();
-            matrices.translate(d2, e2, f2);
-            renderGuardianBeam((PlayerEntity)entity, tickDelta, matrices, vertexConsumers);
-            matrices.pop();
+            render((PlayerEntity)entity, cameraX, cameraY, cameraZ, tickDelta, matrices, vertexConsumers);
         }
     }
 }

@@ -7,7 +7,7 @@ import net.minecraft.entity.data.TrackedData;
 public interface GuardianPlayer {
     /*
     This interface exists to be implemented by the PlayerEntity via the GuardianBeamMixin.
-    It allows the GuardianBeamRendererMixin to access public methods from GuardianBeamMixin, which helps it render the player's guardian beam.
+    It allows the GuardianBeamRendererMixin to access public methods from GuardianBeamMixin, which helps render the player's guardian beam.
     All methods here are originally defined in net.minecraft.entity.mob.GuardianEntity.
     */
     int getWarmupTime();
@@ -19,10 +19,6 @@ public interface GuardianPlayer {
     float getBeamProgress(float tickDelta);
 
     float getBeamTicks();
-
-
-
-    void onTrackedDataSet(TrackedData<?> data);
 
 
 }
