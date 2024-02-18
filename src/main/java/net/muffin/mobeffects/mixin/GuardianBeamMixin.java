@@ -84,7 +84,6 @@ public abstract class GuardianBeamMixin extends LivingEntity implements Guardian
     @Unique
     private void addBubbleEffect(LivingEntity targetEntity) {
         /* TAKEN FROM SOURCE: net.minecraft.entity.mob.GuardianEntity.tickMovement */
-        // my vars
         double targetYOffset = 0.5;
         double playerYOffset = 1.02;
 

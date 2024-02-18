@@ -1,6 +1,7 @@
 package net.muffin.mobeffects;
 
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,8 +24,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 
 
 import net.muffin.mobeffects.event.UseHandCallback;
-import net.muffin.mobeffects.statuseffect.MobStatusEffect;
-import net.muffin.mobeffects.statuseffect.MobStatusEffects;
+import net.muffin.mobeffects.statuseffect.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,14 +48,16 @@ public class MobEffectsMod implements ModInitializer {
 	public void registerMobStatusEffects() {
 		for (MobStatusEffect effect : MobStatusEffects.mobEffectMap.values()) {
 			// Register status effects
-			Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, effect.toString().toLowerCase()), effect);
+			Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, effect.toString()), effect);
 			// Register UseHandCallback event listeners
-			UseHandCallback.EVENT.register((player, world, target) -> {
-				if (player.hasStatusEffect(effect)) {
-					return effect.UseHandEventListener(player, world, target);
-				}
-				return ActionResult.PASS;
-			});
+			if (effect instanceof UseHandMobStatusEffect useHandEffect) {
+				UseHandCallback.EVENT.register((player, world, target) -> {
+					if (player.hasStatusEffect(effect)) {
+						return useHandEffect.UseHandEventListener(player, world, target);
+					}
+					return ActionResult.PASS;
+				});
+			}
 		}
 	}
 	@Override
@@ -67,5 +69,11 @@ public class MobEffectsMod implements ModInitializer {
 		ModMessages.registerC2SPackets();
 		registerMobStatusEffects();
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(MobEffectsMod::addMobStatusEffect);
+		ServerLivingEntityEvents.ALLOW_DAMAGE.register((livingEntity, source, amount) -> {
+			if (livingEntity instanceof PlayerEntity player && ((MobStatusEntity)player).getMobStatusEffect() instanceof ModifyDamageMSE modifyDamageEffect) {
+				modifyDamageEffect.AllowDamageEventListener(player, source, amount);
+			}
+			return true;
+		});
 	}
 }

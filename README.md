@@ -1,15 +1,21 @@
 This project is intended to be a Minecraft mod which allows players to inherit abilities from mobs.
 
-The project reuses some of the game's source code. All methods taken from the game's source are marked as such. 
+### Disclaimer 
+
+As you might imagine, this project reuses some of the game's source code. Any method swiped from the source is marked with a path to the original method. 
 ### Mobs implemented so far:
 
-| Mob            | Passive Abilities                 | Empty-Hand Ability                  |
-|----------------|-----------------------------------|-------------------------------------|
-| Chicken        | Feather falling, seeds are edible | Spawn an egg                        |
-| Guardian       | Thorns, Underwater breathing      | Guardian Beam                       |
-| Elder Guardian | Thorns, Underwater breathing      | Guardian Beam with increased damage |
-| Panda          | Bamboo is edible                  |                                     |
-
+| Mob            | Positive/Neutral Abilities        | Negative Abilities                                            | Empty-Hand Ability                  | 
+|----------------|-----------------------------------|---------------------------------------------------------------|-------------------------------------|
+| Blaze          | Slow floating, fire resistance    | Damaged by water                                              | Shoot a fireball                    |
+| Chicken        | Feather falling, seeds are edible |                                                               | Spawn an egg                        |
+| Creeper        |                                   | Fire causes player to explode                                 | Explode. This will kill the player. |
+| Enderman       | Teleport randomly when hit        | Damaged by water (note: this means rain will likely kill you) | Teleport randomly                   |
+| Evoker         |                                   |                                                               | Evoker fangs                        |
+| Guardian       | Thorns, Underwater breathing      |                                                               | Guardian Beam                       |
+| Elder Guardian | Thorns, Underwater breathing      |                                                               | Guardian Beam                       |
+| Panda          | Bamboo is edible                  |                                                               |                                     |
+| Slime          | All blocks are bouncy             |                                                               |                                     |
 ### Planned Implementations 
 | Mob                       | Positive/Neutral Abilities                                                                            | Negative Abilities                                       | Empty-Hand Ability                                                     | 
 |---------------------------|-------------------------------------------------------------------------------------------------------|----------------------------------------------------------|------------------------------------------------------------------------|
@@ -31,7 +37,7 @@ The project reuses some of the game's source code. All methods taken from the ga
 | Parrot                    | Slow limited flying, feather falling, seeds are edible                                                |                                                          |                                                                        |
 | Pig                       | Raw potatoes and beetroots are edible                                                                 |                                                          |                                                                        |
 | Pufferfish                | Poison thorns, underwater breathing                                                                   | Suffocate on land                                        |                                                                        |
-| Rabbit                    |                                                                                                       |                                                          |                                                                        |
+| Rabbit                    | Jump boost, dandelions are edible                                                                     | Wolves are hostile                                       |                                                                        |
 | Sheep                     |                                                                                                       |                                                          |                                                                        |
 | Skeleton Horse            |                                                                                                       |                                                          |                                                                        |
 | Sniffer                   |                                                                                                       |                                                          |                                                                        |
@@ -52,13 +58,11 @@ The project reuses some of the game's source code. All methods taken from the ga
 | Llama                     | Hay bales are edible                                                                                  |                                                          | Spit                                                                   |
 | Wolf                      |                                                                                                       |                                                          |                                                                        |
 | Zombified Piglin          | Fire res                                                                                              |                                                          |                                                                        |
-| Blaze                     |                                                                                                       |                                                          |                                                                        |
 | Creeper                   |                                                                                                       |                                                          |                                                                        |
 | Endermite                 |                                                                                                       |                                                          |                                                                        |
-| Evoker                    |                                                                                                       |                                                          |                                                                        |
 | Ghast                     |                                                                                                       |                                                          |                                                                        |
 | Hoglin                    |                                                                                                       |                                                          |                                                                        |
-| Husk                      |                                                                                                       |                                                          |                                                                        |
+| Husk                      | Moderate damage boost, inflict hunger on contact                                                      |                                                          |                                                                        |
 | Magma Cube                |                                                                                                       |                                                          |                                                                        |
 | Phantom                   |                                                                                                       |                                                          |                                                                        |
 | Piglin Brute              |                                                                                                       |                                                          |                                                                        |
@@ -71,7 +75,12 @@ The project reuses some of the game's source code. All methods taken from the ga
 | Stray                     |                                                                                                       |                                                          |                                                                        |
 | Vex                       |                                                                                                       |                                                          |                                                                        |
 | Vindicator                |                                                                                                       |                                                          |                                                                        |
-| Warden                    |                                                                                                       |                                                          |                                                                        |
+| Warden                    | Huge damage boost                                                                                     | Blindness                                                | Sonic boom                                                             |
 | Witch                     |                                                                                                       |                                                          |                                                                        |
 | Wither Skeleton           |                                                                                                       |                                                          |                                                                        |
-| Zombie/Zombie Villager    |                                                                                                       |                                                          |                                                                        |
+| Zombie/Zombie Villager    | Moderate damage boost                                                                                 | Burn in sunlight                                         |                                                                        |
+
+
+Bugs:
+* Incorrect death message for creeper explosion death 
+* Remove TrackedData from GuardianEntity

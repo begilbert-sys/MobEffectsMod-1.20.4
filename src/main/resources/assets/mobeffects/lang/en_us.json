@@ -1,4 +1,9 @@
 {
+  "effect.mobeffects.blaze": "Blaze",
   "effect.mobeffects.chicken": "Chicken",
-  "effect.mobeffects.guardian": "Guardian"
+  "effect.mobeffects.creeper": "Creeper",
+  "effect.mobeffects.evoker": "Evoker",
+  "effect.mobeffects.panda": "Panda",
+  "effect.mobeffects.pig": "Pig",
+  "effect.mobeffects.enderman": "Enderman"
 }

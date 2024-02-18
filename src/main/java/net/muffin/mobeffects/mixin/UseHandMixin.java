@@ -16,9 +16,12 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.muffin.mobeffects.MobStatusEntity;
 import net.muffin.mobeffects.event.UseHandCallback;
 import net.muffin.mobeffects.networking.ModMessages;
+import net.muffin.mobeffects.statuseffect.MobStatusEffect;
 import net.muffin.mobeffects.statuseffect.MobStatusEffects;
+import net.muffin.mobeffects.statuseffect.UseHandMobStatusEffect;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,10 +41,12 @@ import net.muffin.mobeffects.MobEffectsMod;
 public abstract class UseHandMixin {
     @Unique
     private static final Logger LOGGER = LoggerFactory.getLogger(MobEffectsMod.MOD_ID);
+
     @Shadow
     @Nullable
     public ClientWorld world;
     @Shadow
+    @Nullable
     public ClientPlayerEntity player;
     @Shadow
     @Nullable
@@ -74,10 +79,20 @@ public abstract class UseHandMixin {
 
     @Inject(method = "doItemUse", at = @At("HEAD"))
     private void injected(CallbackInfo ci) {
+        //LOGGER.info(String.valueOf(player.getYaw()));
         ItemStack itemStack = player.getMainHandStack();
         if(itemStack.isEmpty()) {
             EntityHitResult target = getEntityInCrosshair(15.0f);
             ActionResult result = UseHandCallback.EVENT.invoker().interact(player, world, target);
+        }
+    }
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void updateCooldown(CallbackInfo ci) {
+        if (player != null) {
+            MobStatusEffect currentMobEffect = ((MobStatusEntity) player).getMobStatusEffect();
+            if (currentMobEffect instanceof UseHandMobStatusEffect useHandEffect) {
+                useHandEffect.updateCooldown();
+            }
         }
     }
 }
