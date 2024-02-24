@@ -19,7 +19,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class BlazeStatusEffect extends  UseHandMobStatusEffect {
+public class BlazeStatusEffect extends UseHandMobStatusEffect {
     public BlazeStatusEffect(EntityType<? extends LivingEntity> mob, StatusEffect[] mimickedEffects, Item[] foodifiedItems, Settings settings, int cooldown) {
         super(mob, mimickedEffects, foodifiedItems, settings, cooldown);
     }

@@ -1,13 +1,10 @@
 package net.muffin.mobeffects.mixin;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.MinecraftClient;
 
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 
@@ -16,11 +13,9 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.muffin.mobeffects.MobStatusEntity;
+import net.muffin.mobeffects.MSEPlayerEntity;
 import net.muffin.mobeffects.event.UseHandCallback;
-import net.muffin.mobeffects.networking.ModMessages;
 import net.muffin.mobeffects.statuseffect.MobStatusEffect;
-import net.muffin.mobeffects.statuseffect.MobStatusEffects;
 import net.muffin.mobeffects.statuseffect.UseHandMobStatusEffect;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.muffin.mobeffects.GuardianPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +83,7 @@ public abstract class UseHandMixin {
     @Inject(method = "tick", at = @At("HEAD"))
     private void updateCooldown(CallbackInfo ci) {
         if (player != null) {
-            MobStatusEffect currentMobEffect = ((MobStatusEntity) player).getMobStatusEffect();
+            MobStatusEffect currentMobEffect = ((MSEPlayerEntity) player).getMobStatusEffect();
             if (currentMobEffect instanceof UseHandMobStatusEffect useHandEffect) {
                 useHandEffect.updateCooldown();
             }

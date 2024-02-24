@@ -3,15 +3,21 @@
 	"package": "net.muffin.mobeffects.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"FauxStatusEffectMixin",
+		"BounceyMixin",
+		"CreeperGoalMixin",
+		"FauxStatusEffectLivingEntityMixinEntity",
 		"FoodifyMixin",
 		"GuardianBeamMixin",
-      	"PlayerTickMixins",
-		"BounceyMixin"
+		"jukebox.JukeboxListenerMixin",
+		"jukebox.UpdateJukeboxEventHandlerMixin",
+		"MSEPlayerEntityMixin",
+		"PlayerTickMixinsEntity",
+		"WalkOnLavaMixin"
 	],
 	"client": [
-		"UseHandMixin",
-		"GuardianBeamRendererMixin"
+		"GuardianBeamRendererMixin",
+		"LightLevelMixin",
+		"UseHandMixin"
 	],
 
 	"injectors": {

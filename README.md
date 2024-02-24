@@ -5,17 +5,22 @@ This project is intended to be a Minecraft mod which allows players to inherit a
 As you might imagine, this project reuses some of the game's source code. Any method swiped from the source is marked with a path to the original method. 
 ### Mobs implemented so far:
 
-| Mob            | Positive/Neutral Abilities        | Negative Abilities                                            | Empty-Hand Ability                  | 
-|----------------|-----------------------------------|---------------------------------------------------------------|-------------------------------------|
-| Blaze          | Slow floating, fire resistance    | Damaged by water                                              | Shoot a fireball                    |
-| Chicken        | Feather falling, seeds are edible |                                                               | Spawn an egg                        |
-| Creeper        |                                   | Fire causes player to explode                                 | Explode. This will kill the player. |
-| Enderman       | Teleport randomly when hit        | Damaged by water (note: this means rain will likely kill you) | Teleport randomly                   |
-| Evoker         |                                   |                                                               | Evoker fangs                        |
-| Guardian       | Thorns, Underwater breathing      |                                                               | Guardian Beam                       |
-| Elder Guardian | Thorns, Underwater breathing      |                                                               | Guardian Beam                       |
-| Panda          | Bamboo is edible                  |                                                               |                                     |
-| Slime          | All blocks are bouncy             |                                                               |                                     |
+| Mob            | Positive/Neutral Abilities                                                     | Negative Abilities                                            | Empty-Hand Ability                  | 
+|----------------|--------------------------------------------------------------------------------|---------------------------------------------------------------|-------------------------------------|
+| Blaze          | Slow floating /  Fire resistance                                               | Damaged by water                                              | Shoot a fireball                    |
+| Cat/Ocelot     | Fast / Immune to fall damage / Scare creepers / Extra saturation from raw fish |                                                               |                                     |
+| Chicken        | Feather falling / Seeds are edible                                             |                                                               | Spawn an egg                        |
+| Creeper        |                                                                                | Fire causes player to explode                                 | Explode. This will kill the player. |
+| Enderman       | Teleport randomly when hit                                                     | Damaged by water (note: this means rain will likely kill you) | Teleport randomly                   |
+| Evoker         |                                                                                |                                                               | Evoker fangs                        |
+| Guardian       | Thorns / Underwater breathing                                                  |                                                               | Guardian Beam                       |
+| Elder Guardian | Thorns / Underwater breathing                                                  |                                                               | Guardian Beam                       |
+| Panda          | Bamboo is edible                                                               |                                                               |                                     |
+| Pufferfish     | Poison thorns / Underwater breathing                                           | Suffocate on land                                             |                                     |
+| Parrots        | Limited flying / AOE healing from jukeboxes / Seeds are edible                 |                                                               |                                     |
+| Slime          | All blocks are bouncy                                                          |                                                               |                                     |
+| Sniffer        | Dirt-type blocks sometimes drop sniffer items / Torchflower seeds are edible   | Slowness                                                      |                                     |
+
 ### Planned Implementations 
 | Mob                       | Positive/Neutral Abilities                                                                            | Negative Abilities                                       | Empty-Hand Ability                                                     | 
 |---------------------------|-------------------------------------------------------------------------------------------------------|----------------------------------------------------------|------------------------------------------------------------------------|
@@ -25,7 +30,6 @@ As you might imagine, this project reuses some of the game's source code. Any me
 | Allay                     | Slow flying, feather falling, AOE healing from jukeboxes                                              |                                                          |                                                                        |
 | Bat                       | Slow flying                                                                                           |                                                          |                                                                        |
 | Camel                     | Cacti are edible, dash charging                                                                       |                                                          |                                                                        |
-| Cat/Ocelot                | Immune to fall damage, scare creepers, extra saturation from raw fish                                 |                                                          |                                                                        |
 | Cod/Salmon/Tropical       | Water breathing                                                                                       | Suffocate on land                                        |                                                                        |
 | Cow                       | Wheat is edible                                                                                       |                                                          | Generate milk (when holding bucket)                                    |
 | Donkey                    |                                                                                                       |                                                          |                                                                        |
@@ -34,7 +38,6 @@ As you might imagine, this project reuses some of the game's source code. Any me
 | Horse                     |                                                                                                       |                                                          |                                                                        |
 | Mooshroom                 | Wheat is edible                                                                                       |                                                          | Generate milk (when holding bucket), generate stew (when holding bowl) |
 | Mule                      |                                                                                                       |                                                          |                                                                        |
-| Parrot                    | Slow limited flying, feather falling, seeds are edible                                                |                                                          |                                                                        |
 | Pig                       | Raw potatoes and beetroots are edible                                                                 |                                                          |                                                                        |
 | Pufferfish                | Poison thorns, underwater breathing                                                                   | Suffocate on land                                        |                                                                        |
 | Rabbit                    | Jump boost, dandelions are edible                                                                     | Wolves are hostile                                       |                                                                        |
@@ -81,6 +84,8 @@ As you might imagine, this project reuses some of the game's source code. Any me
 | Zombie/Zombie Villager    | Moderate damage boost                                                                                 | Burn in sunlight                                         |                                                                        |
 
 
-Bugs:
+Known Bugs:
 * Incorrect death message for creeper explosion death 
-* Remove TrackedData from GuardianEntity
+* GuardianEntity should not be using TrackedData (TrackedData is bad for mods)
+* Blaze floating doesn't deactivate till ground is hit
+* Jukebox AOE Healing is sometimes delayed when the world is loaded 

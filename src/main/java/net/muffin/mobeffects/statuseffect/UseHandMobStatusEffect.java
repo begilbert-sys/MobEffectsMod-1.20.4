@@ -41,12 +41,10 @@ public abstract class UseHandMobStatusEffect extends MobStatusEffect {
             --cooldownCounter;
         }
     }
-    public boolean ready() {
-        return cooldownCounter == 0;
-    }
     public void resetCooldown() {
         cooldownCounter = cooldown;
     }
+
     public ActionResult UseHandEventListener(PlayerEntity player, World world, EntityHitResult target) {
         if (cooldownCounter == 0) {
             cooldownCounter = cooldown;

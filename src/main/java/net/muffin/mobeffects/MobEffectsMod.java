@@ -2,14 +2,12 @@ package net.muffin.mobeffects;
 
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.effect.StatusEffect;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 
 
@@ -28,27 +26,27 @@ import net.muffin.mobeffects.statuseffect.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.HashMap;
-
 
 import net.muffin.mobeffects.networking.ModMessages;
 
 
 public class MobEffectsMod implements ModInitializer {
 	public static final String MOD_ID = "mobeffects";
-	private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	private static void addMobStatusEffect(ServerWorld world, Entity entity, LivingEntity killedEntity) {
 		if (entity instanceof PlayerEntity && MobStatusEffects.mobEffectMap.containsKey(killedEntity.getType())) {
 			MobStatusEffect mobEffect = MobStatusEffects.mobEffectMap.get(killedEntity.getType());
-			((MobStatusEntity) entity).setMobStatusEffect(mobEffect);
+			((MSEPlayerEntity) entity).setMobStatusEffect(mobEffect);
 		}
 	}
+
 	public void registerMobStatusEffects() {
+		// Register mob effects
 		for (MobStatusEffect effect : MobStatusEffects.mobEffectMap.values()) {
 			// Register status effects
 			Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, effect.toString()), effect);
+
 			// Register UseHandCallback event listeners
 			if (effect instanceof UseHandMobStatusEffect useHandEffect) {
 				UseHandCallback.EVENT.register((player, world, target) -> {
@@ -57,6 +55,9 @@ public class MobEffectsMod implements ModInitializer {
 					}
 					return ActionResult.PASS;
 				});
+			}
+			if (effect instanceof SnifferStatusEffect snifferEffect) {
+				PlayerBlockBreakEvents.AFTER.register(snifferEffect::afterPlayerBlockBreakEventListener);
 			}
 		}
 	}
@@ -70,7 +71,7 @@ public class MobEffectsMod implements ModInitializer {
 		registerMobStatusEffects();
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(MobEffectsMod::addMobStatusEffect);
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((livingEntity, source, amount) -> {
-			if (livingEntity instanceof PlayerEntity player && ((MobStatusEntity)player).getMobStatusEffect() instanceof ModifyDamageMSE modifyDamageEffect) {
+			if (livingEntity instanceof PlayerEntity player && ((MSEPlayerEntity)player).getMobStatusEffect() instanceof ModifyDamageMSE modifyDamageEffect) {
 				modifyDamageEffect.AllowDamageEventListener(player, source, amount);
 			}
 			return true;

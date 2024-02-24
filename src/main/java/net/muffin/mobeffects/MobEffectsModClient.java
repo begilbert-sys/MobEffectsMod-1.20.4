@@ -3,6 +3,7 @@ package net.muffin.mobeffects;
 import net.fabricmc.api.ClientModInitializer;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
 import net.muffin.mobeffects.networking.ModMessages;
 
 public class MobEffectsModClient implements ClientModInitializer {

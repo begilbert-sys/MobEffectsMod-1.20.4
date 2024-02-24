@@ -24,8 +24,21 @@ public class CreeperStatusEffect extends UseHandMobStatusEffect {
         super(mob, mimickedEffects, foodifiedItems, settings, cooldown);
     }
 
+    private void explode(PlayerEntity player) {
+        player.getWorld().createExplosion(null, player.getX(), player.getY(), player.getZ(), 3.0f, World.ExplosionSourceType.NONE);
+        resetCooldown();
+    }
+    @Override
+    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
+        super.applyUpdateEffect(entity, amplifier);
+        if (entity.isOnFire()) {
+            explode((PlayerEntity)entity);
+        }
+    }
+
+
     public void receiveUseHandC2SPacket(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
                                         PacketByteBuf buf, PacketSender responseSender) {
-        player.getWorld().createExplosion(null, player.getX(), player.getY(), player.getZ(), 3.0f, World.ExplosionSourceType.MOB);
+        explode(player);
     }
 }

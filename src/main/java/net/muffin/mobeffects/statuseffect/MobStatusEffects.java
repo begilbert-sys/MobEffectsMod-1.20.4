@@ -2,6 +2,8 @@ package net.muffin.mobeffects.statuseffect;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Item;
@@ -17,9 +19,23 @@ public class MobStatusEffects extends StatusEffects {
             EntityType.BLAZE,
             new StatusEffect[]{StatusEffects.FIRE_RESISTANCE},
             new Item[]{},
-            new MobStatusEffect.Settings().hydrophobic(),
+            new MobStatusEffect.Settings().glows().hydrophobic(),
             20
     ));
+    public static final MobStatusEffect CAT = create(new MobStatusEffect(
+            EntityType.CAT,
+            new StatusEffect[]{},
+            new Item[]{Items.COD, Items.SALMON},
+            new MobStatusEffect.Settings().fallDamageImmune()
+            ).addAttributeModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, "91AEAA56-376B-4498-935B-2F7F68070635", 0.2f, EntityAttributeModifier.Operation.MULTIPLY_TOTAL)
+    );
+    public static final MobStatusEffect OCELOT = create(new MobStatusEffect(
+            EntityType.OCELOT,
+            new StatusEffect[]{},
+            new Item[]{Items.COD, Items.SALMON},
+            new MobStatusEffect.Settings().fallDamageImmune()
+            ).addAttributeModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, "91AEAA56-376B-4498-935B-2F7F68070635", 0.2f, EntityAttributeModifier.Operation.MULTIPLY_TOTAL)
+    );
     public static final MobStatusEffect CHICKEN = create(new ChickenStatusEffect(
             EntityType.CHICKEN,
             new StatusEffect[]{StatusEffects.SLOW_FALLING},
@@ -48,6 +64,12 @@ public class MobStatusEffects extends StatusEffects {
             new MobStatusEffect.Settings(),
             20
     ));
+    public static final MobStatusEffect GLOW_SQUID = create(new GlowsquidStatusEffect(
+            EntityType.GLOW_SQUID,
+            new StatusEffect[]{StatusEffects.WATER_BREATHING},
+            new Item[]{},
+            new MobStatusEffect.Settings().glows().suffocatesAboveWater()
+    ));
     public static final MobStatusEffect GUARDIAN = create(new GuardianStatusEffect(
             EntityType.GUARDIAN,
             new StatusEffect[]{StatusEffects.WATER_BREATHING},
@@ -71,22 +93,55 @@ public class MobStatusEffects extends StatusEffects {
             new Item[]{Items.BAMBOO},
             new MobStatusEffect.Settings()
     ));
+    public static final MobStatusEffect PARROT = create(new MobStatusEffect(
+            EntityType.PARROT,
+            new StatusEffect[]{},
+            new Item[]{},
+            new MobStatusEffect.Settings().flutters().jukeboxHealing()
+    ));
     public static final MobStatusEffect PIG = create(new MobStatusEffect(
             EntityType.PIG,
             new StatusEffect[]{},
             new Item[]{Items.BEETROOT, Items.POTATO},
             new MobStatusEffect.Settings()
     ));
-    public static final MobStatusEffect SLIME = create(new MobStatusEffect(
+    public static final MobStatusEffect PUFFERFISH = create(new PufferfishStatusEffect(
+            EntityType.PUFFERFISH,
+            new StatusEffect[]{},
+            new Item[]{},
+            new AbstractMobStatusEffect.Settings().suffocatesAboveWater()
+    ));
+    public static final MobStatusEffect SLIME = create(new SlimeStatusEffect(
             EntityType.SLIME,
             new StatusEffect[]{},
+            new Item[]{},
+            new MobStatusEffect.Settings().fallDamageImmune(),
+            1
+    ));
+    public static final MobStatusEffect SNIFFER = create(new SnifferStatusEffect(
+            EntityType.SNIFFER,
+            new StatusEffect[]{},
+            new Item[]{Items.TORCHFLOWER_SEEDS},
+            new MobStatusEffect.Settings()
+            ).addAttributeModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, "7107DE5E-7CE8-4030-940E-514C1F160890", -1.5f, EntityAttributeModifier.Operation.MULTIPLY_TOTAL)
+    );
+    public static final MobStatusEffect SNOW_GOLEM = create(new SnowGolemStatusEffect(
+            EntityType.SNOW_GOLEM,
+            new StatusEffect[]{},
+            new Item[]{},
+            new MobStatusEffect.Settings().canWalkOnSnow().hydrophobic(),
+            1
+    ));
+    public static final MobStatusEffect STRIDER = create(new MobStatusEffect(
+            EntityType.STRIDER,
+            new StatusEffect[]{StatusEffects.FIRE_RESISTANCE},
             new Item[]{},
             new MobStatusEffect.Settings()
     ));
 
-
-    public static MobStatusEffect create(MobStatusEffect effect) {
-        mobEffectMap.put(effect.getMobType(), effect);
-        return effect;
+    private static MobStatusEffect create(StatusEffect effect) {
+        MobStatusEffect mobEffect = (MobStatusEffect)effect;
+        mobEffectMap.put(mobEffect.getMobType(), mobEffect);
+        return mobEffect;
     }
 }
